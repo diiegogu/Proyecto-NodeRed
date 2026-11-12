@@ -5,3 +5,6 @@ Proyecto desarrollado en Node-RED para la asignatura.
 - Repositorio utilizado para demostrar Git, Push y Pull.
 ## Autor
 Diegoguzman
+## Prueba de Git Pull
+Este cambio fue realizado desde GitHub para demostrar
+el funcionamiento de Git Pull en GitHub Desktop.
