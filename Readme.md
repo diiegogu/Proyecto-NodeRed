@@ -7,4 +7,4 @@ Proyecto desarrollado en Node-RED para la asignatura.
 Diegoguzman
 ## Prueba de Git Pull
 Este cambio fue realizado desde GitHub para demostrar
-el funcionamiento de Git Pull en GitHub Desktop.
+el funcionamiento de Git Pull en GitHub Desktop
