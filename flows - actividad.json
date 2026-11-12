@@ -1,0 +1,492 @@
+[
+    {
+        "id": "31608239e125702b",
+        "type": "tab",
+        "label": "11 - REST: servidor GET e interfaz HTML",
+        "disabled": false,
+        "info": "Fuente original: flows (4).json. Material: Ejercicio #2 - Servidor REST _ API rest.html; Ejercicio # 3 - Retos _ API rest.html.\n\nGET /api-consolidado/sensores/:temp/:hum -> conversión numérica -> plantilla HTML y gauges -> respuesta 200.\n\nNo hay cliente GET exportado. Se añade cliente con parámetros aleatorios cada 60 s y enlace real a la interfaz HTML.",
+        "env": [
+            {
+                "name": "LAB_HTTP_PORT",
+                "value": "1880",
+                "type": "num"
+            }
+        ]
+    },
+    {
+        "id": "82ac01982c2452c9",
+        "type": "ui-markdown",
+        "z": "31608239e125702b",
+        "group": "db15b4d4ea105baf",
+        "name": "Objetivo y uso",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "content": "# 11 - REST: servidor GET e interfaz HTML\n\nRecibir temperatura/humedad por URL y visualizarlas.\n\nGET /sensores/:temp/:hum -> conversión numérica -> plantilla HTML y gauges -> respuesta 200.\n\n**Fuente:** Ejercicio #2 - Servidor REST _ API rest.html; Ejercicio # 3 - Retos _ API rest.html\n\n[Volver al índice](/consolidado/inicio)\n\n[Abrir la interfaz HTML original con 23.8 °C y 89.7 %](/api-consolidado/sensores/23.8/89.7)",
+        "className": "",
+        "x": 250,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6739c7251fc1b884",
+        "type": "http in",
+        "z": "31608239e125702b",
+        "name": "",
+        "url": "/api-consolidado/sensores/:temp/:hum",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 240,
+        "y": 240,
+        "wires": [
+            [
+                "058e0b15a05d4d0b",
+                "ef383c0e778c9e41"
+            ]
+        ]
+    },
+    {
+        "id": "058e0b15a05d4d0b",
+        "type": "debug",
+        "z": "31608239e125702b",
+        "name": "SERVER REST",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "911aa877f32d7446",
+        "type": "http response",
+        "z": "31608239e125702b",
+        "name": "OK",
+        "statusCode": "200",
+        "headers": {},
+        "x": 890,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "808761df17d0d2a3",
+        "type": "template",
+        "z": "31608239e125702b",
+        "name": "Hola Mundo",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Lectura de sensores</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            background: #f1f5f9;\n            text-align: center;\n            padding: 40px;\n        }\n\n        h1 {\n            color: #1e293b;\n        }\n\n        .sensor {\n            background: white;\n            padding: 25px;\n            margin: 20px auto;\n            max-width: 350px;\n            border-radius: 12px;\n            box-shadow: 0 4px 10px #0002;\n        }\n\n        .valor {\n            font-size: 32px;\n            color: #15803d;\n            font-weight: bold;\n        }\n    </style>\n</head>\n<body>\n    <h1>Monitor de sensores</h1>\n\n    <div class=\"sensor\">\n        <h2>Temperatura</h2>\n        <p class=\"valor\">{{req.params.temp}} °C</p>\n    </div>\n\n    <div class=\"sensor\">\n        <h2>Humedad</h2>\n        <p class=\"valor\">{{req.params.hum}} %</p>\n    </div>\n</body>\n</html>",
+        "output": "str",
+        "x": 730,
+        "y": 100,
+        "wires": [
+            [
+                "911aa877f32d7446"
+            ]
+        ]
+    },
+    {
+        "id": "ef383c0e778c9e41",
+        "type": "function",
+        "z": "31608239e125702b",
+        "name": "function 1",
+        "func": "const temp = Number(msg.req.params.temp);\nconst hum = Number(msg.req.params.hum);\n\nmsg.payload = {\n    temperatura: temp,\n    humedad: hum,\n    unidadTemperatura: \"°C\",\n    unidadHumedad: \"%\"\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 180,
+        "wires": [
+            [
+                "808761df17d0d2a3",
+                "7b5a4f850f1325a7",
+                "e23a26a3a121120d"
+            ]
+        ]
+    },
+    {
+        "id": "fe3c85ae62b0a8e0",
+        "type": "ui-gauge",
+        "z": "31608239e125702b",
+        "name": "",
+        "group": "beacf97a0da2d686",
+        "order": 2,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Temperatura",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "4",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "7",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 910,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e14c1b81660c9d0d",
+        "type": "ui-gauge",
+        "z": "31608239e125702b",
+        "name": "",
+        "group": "beacf97a0da2d686",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Humedad",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "4",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "7",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 900,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7b5a4f850f1325a7",
+        "type": "function",
+        "z": "31608239e125702b",
+        "name": "function 2",
+        "func": "msg.payload = msg.payload.temperatura;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 160,
+        "wires": [
+            [
+                "fe3c85ae62b0a8e0"
+            ]
+        ]
+    },
+    {
+        "id": "e23a26a3a121120d",
+        "type": "function",
+        "z": "31608239e125702b",
+        "name": "function 3",
+        "func": "msg.payload = msg.payload.humedad;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 220,
+        "wires": [
+            [
+                "e14c1b81660c9d0d"
+            ]
+        ]
+    },
+    {
+        "id": "9c356009885f1cab",
+        "type": "http request",
+        "z": "31608239e125702b",
+        "name": "Cliente GET local dinámico",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 800,
+        "y": 380,
+        "wires": [
+            [
+                "24cf9c53d3a69faf"
+            ]
+        ]
+    },
+    {
+        "id": "24cf9c53d3a69faf",
+        "type": "debug",
+        "z": "31608239e125702b",
+        "name": "Cliente GET completado",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 1050,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "294eb9f0c3ec7354",
+        "type": "function",
+        "z": "31608239e125702b",
+        "name": "Construir URL con sensores aleatorios",
+        "func": "const temp=Math.floor(Math.random()*16)+20;\nconst hum=Math.floor(Math.random()*41)+40;\nmsg.url=\"http://127.0.0.1:\"+env.get(\"LAB_HTTP_PORT\")+\"/api-consolidado/sensores/\"+encodeURIComponent(temp)+\"/\"+encodeURIComponent(hum);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 380,
+        "wires": [
+            [
+                "9c356009885f1cab"
+            ]
+        ]
+    },
+    {
+        "id": "b058297a32227fd9",
+        "type": "inject",
+        "z": "31608239e125702b",
+        "name": "Cliente GET cada 60 s",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 440,
+        "wires": [
+            [
+                "294eb9f0c3ec7354"
+            ]
+        ]
+    },
+    {
+        "id": "98d77a46b76bbb27",
+        "type": "ui-button",
+        "z": "31608239e125702b",
+        "group": "beacf97a0da2d686",
+        "name": "Enviar sensores por GET",
+        "label": "Enviar sensores por GET",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "play",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "date",
+        "topic": "",
+        "topicType": "str",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 170,
+        "y": 360,
+        "wires": [
+            [
+                "294eb9f0c3ec7354"
+            ]
+        ]
+    },
+    {
+        "id": "db15b4d4ea105baf",
+        "type": "ui-group",
+        "name": "Descripcion",
+        "page": "f4b940a85b9315c7",
+        "width": 12,
+        "height": 1,
+        "order": 1,
+        "showTitle": false,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "beacf97a0da2d686",
+        "type": "ui-group",
+        "name": "Panel de control",
+        "page": "f4b940a85b9315c7",
+        "width": 6,
+        "height": 1,
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "f4b940a85b9315c7",
+        "type": "ui-page",
+        "name": "Servidor REST HTML",
+        "ui": "09770c5c8074ae51",
+        "path": "/lab-11",
+        "icon": "file-document-outline",
+        "layout": "grid",
+        "theme": "a78b5d81229068c6",
+        "breakpoints": [
+            {
+                "name": "Móvil",
+                "px": 0,
+                "cols": 6
+            },
+            {
+                "name": "Escritorio",
+                "px": 900,
+                "cols": 12
+            }
+        ],
+        "order": 12,
+        "className": "panel-practicas",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "09770c5c8074ae51",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "a78b5d81229068c6",
+        "type": "ui-theme",
+        "name": "Tema azul oscuro",
+        "colors": {
+            "surface": "#f4f7fb",
+            "primary": "#255a91",
+            "bgPage": "#edf2f7",
+            "groupBg": "#ffffff",
+            "groupOutline": "#ccd8e5"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "20px",
+            "groupGap": "18px",
+            "groupBorderRadius": "10px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "06309fa1dddaded7",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.33.0"
+        }
+    }
+]
